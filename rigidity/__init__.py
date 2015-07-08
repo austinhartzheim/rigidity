@@ -17,6 +17,8 @@ class Rigidity():
     # TODO: Investigate of DictReaders and DictWriters can be handled in
     #   the same class or if another class is required.
 
+    csvobj = None  # Declare here to prevent getattr/setattr recursion
+
     def __init__(self, csvobj, rules=[]):
         '''
         :param csvfile: a Reader or Writer object from the csv module;
@@ -28,7 +30,9 @@ class Rigidity():
           of rules will be applied to.
         '''
         self.csvobj = csvobj
+        self.rules = rules
 
+    # Wrapper methods for the `csv` interface
     def writeheader(self):
         '''
         Plain pass-through to the given CSV object. It is assumed that
@@ -61,6 +65,39 @@ class Rigidity():
         for row in rows:
             self.writerow(row)
 
+    # New methods, not part of the `csv` interface
+    def validate(self, row):
+        '''
+        Validate that the row conforms with the specified rules,
+        correcting invalid rows where the rule is able to do so.
+
+        If the row is valid or can be made valid through corrections,
+        this method will return a row that can be written to the CSV
+        file. If the row is invalid and cannot be corrected, then this
+        method will raise an exception.
+
+        :param row: a row object that can be passed to a CSVWriter's
+          writerow() method.
+        '''
+        # Case row to a list to ensure mutability
+        row = list(row)
+
+        # Generate keys to access the row and rules data
+        if isinstance(row, dict):
+            keys = row.keys()
+        else:
+            keys = range(0, len(row))
+
+        # Iterate through all keys, updating the data
+        for key in keys:
+            value = row[key]
+            for rule in self.rules[key]:
+                value = rule.apply(value)
+            row[key] = value
+
+        # Return the updated data
+        return row
+
     def __next__(self):
         '''
         Call the __next__() method on the given CSV object, validate and
@@ -70,12 +107,15 @@ class Rigidity():
         pass
 
     def __getattr__(self, name):
-        return getattr(self.csvobj, name)
+        if hasattr(self.csvobj, name):
+            return getattr(self.csvobj, name)
+        else:
+            return super().__getattr__(self, name)
 
     def __setattr__(self, name, value):
         if hasattr(self.csvobj, name):
             return setattr(self.csvobj, name, value)
-        return setattr(self, name, value)
+        super().__setattr__(name, value)
 
     def __delattr__(self, name):
         if hasattr(self.csvobj, name):
