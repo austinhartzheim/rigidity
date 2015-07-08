@@ -1,5 +1,5 @@
 '''
-RigidCSV is a simple wrapper to the built-in csv module that allows for
+Rigidity is a simple wrapper to the built-in csv module that allows for
 validation and correction of data being read/written from/to CSV files.
 
 This module allows you to easily construct validation and correction
