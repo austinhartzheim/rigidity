@@ -47,7 +47,7 @@ class Rigidity():
         exception if the validation or correction fails. Then, write the
         row to the CSV file.
         '''
-        raise NotImplementedError()
+        self.csvobj.writerow(self.validate(row))
 
     def writerows(self, rows):
         '''
