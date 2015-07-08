@@ -26,3 +26,18 @@ class Float(Rule):
 
     def apply(self, value):
         return float(value)
+
+
+class Unique(Rule):
+    '''
+    Only allow unique fields to pass.
+    '''
+    def __init__(self):
+        self.encountered = []
+
+    def apply(self, value):
+        if value in self.encountered:
+            raise Exception('Value not unique')
+        self.encountered.append(value)
+        return value
+
