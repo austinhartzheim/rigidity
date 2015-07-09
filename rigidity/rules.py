@@ -41,3 +41,11 @@ class Unique(Rule):
         self.encountered.append(value)
         return value
 
+
+class Drop(Rule):
+    '''
+    Drop the data in this column.
+    '''
+
+    def apply(self, value):
+        return ''
