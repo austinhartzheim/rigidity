@@ -49,3 +49,12 @@ class Drop(Rule):
 
     def apply(self, value):
         return ''
+
+
+class Strip(Rule):
+    '''
+    Strip excess white space from the beginning and end of a value.
+    '''
+
+    def apply(self, value):
+        return value.strip()
