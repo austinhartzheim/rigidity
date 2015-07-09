@@ -32,6 +32,11 @@ class Rigidity():
         self.csvobj = csvobj
         self.rules = rules
 
+        if isinstance(rules, dict):
+            self.keys = rules.keys()
+        else:
+            self.keys = range(0, len(rules))
+
     # Wrapper methods for the `csv` interface
     def writeheader(self):
         '''
@@ -82,14 +87,8 @@ class Rigidity():
         # Case row to a list to ensure mutability
         row = list(row)
 
-        # Generate keys to access the row and rules data
-        if isinstance(row, dict):
-            keys = row.keys()
-        else:
-            keys = range(0, len(row))
-
         # Iterate through all keys, updating the data
-        for key in keys:
+        for key in self.keys:
             value = row[key]
             for rule in self.rules[key]:
                 value = rule.apply(value)
@@ -98,13 +97,17 @@ class Rigidity():
         # Return the updated data
         return row
 
+    def __iter__(self):
+        for row in iter(self.csvobj):
+            yield self.validate(row)
+
     def __next__(self):
         '''
         Call the __next__() method on the given CSV object, validate and
         repair the row it returns, raise an exception if the row cannot
         be repaired, and then return the row.
         '''
-        pass
+        return self.validate(next(self.csvobj))
 
     def __getattr__(self, name):
         if hasattr(self.csvobj, name):
