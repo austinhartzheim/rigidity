@@ -124,4 +124,4 @@ class Rigidity():
     def __delattr__(self, name):
         if hasattr(self.csvobj, name):
             return delattr(self.csvobj, name)
-        return delattr(self, name)
+        return super().__delattr__(name)

@@ -69,3 +69,11 @@ class TestRigidity(unittest.TestCase):
         writer.writerow.assert_called_with(['', ''])
         r.writerow([1, 2])
         writer.writerow.assert_called_with(['', ''])
+
+    def test___getattr___invalid_attribute(self):
+        r = rigidity.Rigidity(mock.MagicMock, [[], []])
+        self.assertRaises(AttributeError, getattr, r, 'does_not_exist')
+
+    def test___delattr___invalid_attribute(self):
+        r = rigidity.Rigidity(mock.MagicMock, [[], []])
+        self.assertRaises(AttributeError, delattr, r, 'does_not_exist')
