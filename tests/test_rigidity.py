@@ -4,6 +4,7 @@ import tempfile
 import csv
 
 import rigidity
+import rigidity.rules
 
 
 class TestRigidity(unittest.TestCase):
@@ -42,3 +43,25 @@ class TestRigidity(unittest.TestCase):
         r = rigidity.Rigidity(writer, [])
         r.writeheader()
         writer.writeheader.assert_called_once_with()
+
+    def test_writerow(self):
+        '''
+        Test that the writerow method calls the writerow method of the
+        CSVWriter object with validated/corrected data.
+        '''
+        # Test without rules
+        writer = unittest.mock.MagicMock()
+        r = rigidity.Rigidity(writer, [[], []])
+        r.writerow(('hello', 'world'))
+        writer.writerow.assert_called_with(['hello', 'world'])
+        r.writerow([1, 2])
+        writer.writerow.assert_called_with([1, 2])
+
+        # Test with rules
+        writer = unittest.mock.MagicMock()
+        r = rigidity.Rigidity(writer, [[rigidity.rules.Drop()],
+                                       [rigidity.rules.Drop()]])
+        r.writerow(('hello', 'world'))
+        writer.writerow.assert_called_with(['', ''])
+        r.writerow([1, 2])
+        writer.writerow.assert_called_with(['', ''])
