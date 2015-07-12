@@ -1,7 +1,11 @@
 import unittest
-import unittest.mock
 import tempfile
 import csv
+
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
 import rigidity
 import rigidity.rules
@@ -38,7 +42,7 @@ class TestRigidity(unittest.TestCase):
         Test that the writehader() method on a CSVWriter is called when
         Rigidity's csvheader() is called.
         '''
-        writer = unittest.mock.MagicMock()
+        writer = mock.MagicMock()
 
         r = rigidity.Rigidity(writer, [])
         r.writeheader()
@@ -50,7 +54,7 @@ class TestRigidity(unittest.TestCase):
         CSVWriter object with validated/corrected data.
         '''
         # Test without rules
-        writer = unittest.mock.MagicMock()
+        writer = mock.MagicMock()
         r = rigidity.Rigidity(writer, [[], []])
         r.writerow(('hello', 'world'))
         writer.writerow.assert_called_with(['hello', 'world'])
@@ -58,7 +62,7 @@ class TestRigidity(unittest.TestCase):
         writer.writerow.assert_called_with([1, 2])
 
         # Test with rules
-        writer = unittest.mock.MagicMock()
+        writer = mock.MagicMock()
         r = rigidity.Rigidity(writer, [[rigidity.rules.Drop()],
                                        [rigidity.rules.Drop()]])
         r.writerow(('hello', 'world'))
