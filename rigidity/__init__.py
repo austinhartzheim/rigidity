@@ -84,8 +84,9 @@ class Rigidity():
         :param row: a row object that can be passed to a CSVWriter's
           writerow() method.
         '''
-        # Case row to a list to ensure mutability
-        row = list(row)
+        # Ensure mutability - I'm looking at you, tuples!
+        if not isinstance(row, (list, dict)):
+            row = list(row)
 
         # Iterate through all keys, updating the data
         for key in self.keys:
