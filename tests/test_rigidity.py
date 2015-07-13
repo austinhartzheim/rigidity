@@ -73,6 +73,14 @@ class TestRigidity(unittest.TestCase):
         r.writerow([1, 2])
         writer.writerow.assert_called_with(['', ''])
 
+    def test_writerows(self):
+        '''
+        Write rows to a temporary file with rules.
+        '''
+        with tempfile.TemporaryFile(mode='w') as csvfile:
+            r = rigidity.Rigidity(csv.writer(csvfile))
+            r.writerows([['a', 'b'], ['c', 'd']])
+
     def test___getattr___invalid_attribute(self):
         r = rigidity.Rigidity(mock.MagicMock, [[], []])
         self.assertRaises(AttributeError, getattr, r, 'does_not_exist')
