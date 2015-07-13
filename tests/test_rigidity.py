@@ -1,6 +1,7 @@
 import unittest
 import tempfile
 import csv
+import os
 
 try:
     from unittest import mock
@@ -9,6 +10,8 @@ except ImportError:
 
 import rigidity
 import rigidity.rules
+
+DATA_DIR = os.path.join(os.path.split(__file__)[0], 'data')
 
 
 class TestRigidity(unittest.TestCase):
@@ -77,3 +80,19 @@ class TestRigidity(unittest.TestCase):
     def test___delattr___invalid_attribute(self):
         r = rigidity.Rigidity(mock.MagicMock, [[], []])
         self.assertRaises(AttributeError, delattr, r, 'does_not_exist')
+
+
+    # Tests with actual data
+    def test_data_simple_read(self):
+        '''
+        Perform a read of an actual CSV file with rules.
+        '''
+        rules = [
+            [rigidity.rules.Strip()],
+            [rigidity.rules.Strip()]
+        ]
+        with open(os.path.join(DATA_DIR, 'data_0001.csv')) as csvfile:
+            r = rigidity.Rigidity(csv.reader(csvfile), rules)
+            for row in r:
+                self.assertEqual(row[0], row[0].strip())
+                self.assertEqual(row[1], row[1].strip())
