@@ -89,7 +89,6 @@ class TestRigidity(unittest.TestCase):
         r = rigidity.Rigidity(mock.MagicMock, [[], []])
         self.assertRaises(AttributeError, delattr, r, 'does_not_exist')
 
-
     # Tests with actual data
     def test_data_simple_read(self):
         '''
@@ -106,6 +105,22 @@ class TestRigidity(unittest.TestCase):
             for row in r:
                 self.assertEqual(row[0], row[0].strip())
                 self.assertEqual(row[1], row[1].strip())
+
+    def test___delattr___reader_attribute(self):
+        '''
+        Test that the __delattr__ method will attempt to delete from
+        the CSVReader or CSVWriter object when it has an attribute.
+
+        In this case, the deletion should cause an AttributeError
+        because the attribute cannot be deleted.
+        '''
+        DATA_FILE = 'data_0001.csv'
+
+        with open(os.path.join(DATA_DIR, DATA_FILE)) as csvfile:
+            reader = csv.DictReader(csvfile, fieldnames=['a', 'b'])
+            assert hasattr(reader, 'fieldnames')
+            r = rigidity.Rigidity(reader)
+            self.assertRaises(AttributeError, delattr, r, 'fieldnames')
 
     def test___next__(self):
         '''
