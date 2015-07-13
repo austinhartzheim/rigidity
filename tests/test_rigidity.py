@@ -87,12 +87,30 @@ class TestRigidity(unittest.TestCase):
         '''
         Perform a read of an actual CSV file with rules.
         '''
+        DATA_FILE = 'data_0001.csv'
+
         rules = [
             [rigidity.rules.Strip()],
             [rigidity.rules.Strip()]
         ]
-        with open(os.path.join(DATA_DIR, 'data_0001.csv')) as csvfile:
+        with open(os.path.join(DATA_DIR, DATA_FILE)) as csvfile:
             r = rigidity.Rigidity(csv.reader(csvfile), rules)
             for row in r:
                 self.assertEqual(row[0], row[0].strip())
                 self.assertEqual(row[1], row[1].strip())
+
+    def test___next__(self):
+        '''
+        Test that the __next__ method returns the next row,
+        post-validation and post-correction.
+        '''
+        DATA_FILE = 'data_0001.csv'
+
+        rules = [
+            [rigidity.rules.Strip()],
+            [rigidity.rules.Strip()]
+        ]
+        with open(os.path.join(DATA_DIR, DATA_FILE)) as csvfile:
+            r = rigidity.Rigidity(csv.reader(csvfile), rules)
+            self.assertEqual(next(r), ['hello', 'world'])
+            self.assertEqual(next(r), ['things', 'great'])
