@@ -8,6 +8,7 @@ This allows you to easily upgrade old software to use new, strict rules.
 '''
 
 import csv
+import rigidity.rules as rules
 
 
 class Rigidity():
