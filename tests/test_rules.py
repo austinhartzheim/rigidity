@@ -60,6 +60,61 @@ class TestFloat(unittest.TestCase):
         self.assertEqual(self.rule.apply('1.23'), 1.23)
 
 
+class TestReplaceValue(unittest.TestCase):
+
+    def test_apply(self):
+        rule = rigidity.rules.ReplaceValue({'hello': 'world'})
+        self.assertEqual(rule.apply('hello'), 'world')
+
+    def test_apply_default_raises_exception(self):
+        '''
+        Test that the rule raises an exception when the value does not
+        have a replacement available and the default missing_action
+        behavior is being used.
+        '''
+        rule = rigidity.rules.ReplaceValue()
+        self.assertRaises(Exception, rule.apply, 'anystring')
+
+    def test_apply_drop(self):
+        '''
+        Test that when the missing_action is set to the drop behavior,
+        an empty string is returned when the value does not have an
+        available replacement.
+        '''
+        rule = rigidity.rules.ReplaceValue(missing_action=rigidity.rules.ReplaceValue.ACTION_DROP)
+        self.assertEqual(rule.apply('anystring'), '')
+
+    def test_apply_default_value(self):
+        '''
+        Test that when the missing_action is set to the drop behavior,
+        an empty string is returned when the value does not have an
+        available replacement.
+        '''
+        default_value = 1234
+        rule = rigidity.rules.ReplaceValue(missing_action=rigidity.rules.ReplaceValue.ACTION_DEFAULT_VALUE,
+                                           default_value=default_value)
+        self.assertEqual(rule.apply('anystring'), default_value)
+
+    def test_apply_error(self):
+        '''
+        Test that when the missing_action is the error behavior, an
+        error is raised when the value does not have an available
+        replacement.
+        '''
+        rule = rigidity.rules.ReplaceValue(missing_action=rigidity.rules.ReplaceValue.ACTION_ERROR)
+        self.assertRaises(IndexError, rule.apply, 'anystring')
+        self.assertRaises(IndexError, rule.apply, 10)
+
+    def test_apply_invalid_missing_action(self):
+        '''
+        Test that when the missing_action is set to an invalid
+        behavior and a value does not have an available replacement,
+        an exception is raised.
+        '''
+        rule = rigidity.rules.ReplaceValue(missing_action=None)
+        self.assertRaises(IndexError, rule.apply, 'anystring')
+        self.assertRaises(IndexError, rule.apply, 10)
+
 class TestUnique(unittest.TestCase):
 
     def setUp(self):

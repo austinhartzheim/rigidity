@@ -60,6 +60,45 @@ class Float(Rule):
         return float(value)
 
 
+class ReplaceValue(Rule):
+    '''
+    Check if the value has a specified replacement. If it does, replace
+    it with that value. If it does not, take one of the following
+    configurable actions: pass it through unmodified, drop the value,
+    or use a default value.
+    '''
+    # These variables are equal; see comment in __init__ about how
+    #   ACTION_DROP is implemented by using ACTION_DEFAULT_VALUE.
+    ACTION_DROP = 1
+    ACTION_DEFAULT_VALUE = 2
+    ACTION_PASSTHROUGH = 3
+    ACTION_ERROR = 4
+
+    def __init__(self, replacements={}, missing_action=ACTION_ERROR,
+                 default_value=''):
+        self.replacements = replacements
+        self.missing_action = missing_action
+        self.default_value = default_value
+
+        # Implement dropping by using a default value of an empty string;
+        #   this effectively drops the value.
+        if missing_action == self.ACTION_DROP:
+            self.missing_action = self.ACTION_DEFAULT_VALUE
+            self.default_value = ''
+
+    def apply(self, value):
+        if value in self.replacements:
+            return self.replacements[value]
+        elif self.missing_action == self.ACTION_PASSTHROUGH:
+            return value
+        elif self.missing_action == self.ACTION_DEFAULT_VALUE:
+            return self.default_value
+        elif self.missing_action == self.ACTION_ERROR:
+            raise IndexError('No replacement for value')
+        else:
+            raise IndexError('No replacement for value; invalid default action')
+
+
 class Unique(Rule):
     '''
     Only allow unique fields to pass.
