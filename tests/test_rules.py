@@ -14,6 +14,34 @@ class TestRule(unittest.TestCase):
         self.assertEqual(self.rule.apply('hello'), 'hello')
 
 
+class TestCapitalizeWords(unittest.TestCase):
+
+    def test_apply(self):
+        '''
+        Test normal cases of the apply() method, splitting on the
+        default characters.
+        '''
+        rule = rigidity.rules.CapitalizeWords()
+        self.assertEqual(rule.apply('hello there, world'), 'Hello There, World')
+        self.assertEqual(rule.apply('hi;\nhow\tare ya '), 'Hi;\nHow\tAre Ya ')
+
+    def test_apply_no_cap_first(self):
+        '''
+        Test that setting the cap_first parameter to false correctly
+        disables capitalization of the first letter.
+        '''
+        rule = rigidity.rules.CapitalizeWords(cap_first=False)
+        self.assertEqual(rule.apply('hello there, world'), 'hello There, World')
+        self.assertEqual(rule.apply('hi;\nhow\tare ya '), 'hi;\nHow\tAre Ya ')
+
+    def test_apply_custom_seperators(self):
+        '''
+        Test that the class respects custom seperator characters.
+        '''
+        rule = rigidity.rules.CapitalizeWords(seperators=' -')
+        self.assertEqual(rule.apply('abc def-hij'), 'Abc Def-Hij')
+
+
 class TestInteger(unittest.TestCase):
 
     def setUp(self):

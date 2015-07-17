@@ -1,3 +1,4 @@
+import ctypes
 
 
 class Rule():
@@ -8,6 +9,37 @@ class Rule():
 
     def apply(self, value):
         return value
+
+
+class CapitalizeWords(Rule):
+    '''
+    Capitalize words in a string. By default, words are detected by
+    searching for space, tab, new line, and carriage return characters.
+    You may override this setting.
+
+    Also, by default, the first character is capitalized automatically.
+    '''
+    SEPERATORS = ' \t\n\r'
+
+    def __init__(self, seperators=SEPERATORS, cap_first=True):
+        self.seperators = seperators
+        self.cap_first = cap_first
+
+    def apply(self, value):
+        # Create a unicode buffer. These things are mutable!
+        buffer = ctypes.create_unicode_buffer(value)
+
+        # If capitalization of the first character is desired, capitalize.
+        if self.cap_first:
+            buffer[0] = buffer[0].upper()
+
+        # Search for all separators in the string
+        for i in range(0, len(buffer)-1):
+            if buffer[i] in self.seperators:
+                buffer[i+1] = buffer[i+1].upper()
+
+        # Return the modified buffer
+        return buffer.value
 
 
 class Integer(Rule):
