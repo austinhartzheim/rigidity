@@ -95,6 +95,11 @@ class TestReplaceValue(unittest.TestCase):
                                            default_value=default_value)
         self.assertEqual(rule.apply('anystring'), default_value)
 
+    def test_apply_passthrough_value(self):
+        rule = rigidity.rules.ReplaceValue(missing_action=rigidity.rules.ReplaceValue.ACTION_PASSTHROUGH)
+        self.assertEqual(rule.apply('anystring'), 'anystring')
+        self.assertEqual(rule.apply(30), 30)
+
     def test_apply_error(self):
         '''
         Test that when the missing_action is the error behavior, an
