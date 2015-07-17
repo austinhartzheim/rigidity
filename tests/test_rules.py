@@ -95,3 +95,19 @@ class TestUpcA(unittest.TestCase):
         rule = rigidity.rules.UpcA(strict=True)
         valid_upc = '000000000000'
         self.assertEqual(rule.apply(valid_upc), valid_upc)
+
+
+class TestLower(unittest.TestCase):
+
+    def test_apply(self):
+        rule = rigidity.rules.Lower()
+        self.assertEqual(rule.apply('HELLO'), 'hello')
+        self.assertEqual(rule.apply('123'), '123')
+
+
+class TestUpper(unittest.TestCase):
+
+    def test_apply(self):
+        rule = rigidity.rules.Upper()
+        self.assertEqual(rule.apply('hello'), 'HELLO')
+        self.assertEqual(rule.apply('123'), '123')

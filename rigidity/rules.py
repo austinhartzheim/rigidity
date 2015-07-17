@@ -93,3 +93,19 @@ class UpcA(Rule):
                 raise ValueError('UPC-A check digit is incorrect')
 
         return value
+
+
+class Lower(Rule):
+    '''
+    Convert a string value to lower-case.
+    '''
+    def apply(self, value):
+        return value.lower()
+
+
+class Upper(Rule):
+    '''
+    Convert a string value to upper-case.
+    '''
+    def apply(self, value):
+        return value.upper()
