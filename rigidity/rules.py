@@ -99,6 +99,17 @@ class ReplaceValue(Rule):
             raise IndexError('No replacement for value; invalid default action')
 
 
+class Static(Rule):
+    '''
+    Replace a field's value with a static value.
+    '''
+    def __init__(self, value):
+        self.static_value = value
+
+    def apply(self, value):
+        return self.static_value
+
+
 class Unique(Rule):
     '''
     Only allow unique fields to pass.

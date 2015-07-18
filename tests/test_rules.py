@@ -120,6 +120,14 @@ class TestReplaceValue(unittest.TestCase):
         self.assertRaises(IndexError, rule.apply, 'anystring')
         self.assertRaises(IndexError, rule.apply, 10)
 
+
+class TestStatic(unittest.TestCase):
+
+    def test_apply(self):
+        rule = rigidity.rules.Static('hello world')
+        self.assertEqual(rule.apply('strings'), 'hello world')
+
+
 class TestUnique(unittest.TestCase):
 
     def setUp(self):
