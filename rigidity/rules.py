@@ -60,6 +60,16 @@ class Float(Rule):
         return float(value)
 
 
+class RemoveLinebreaks(Rule):
+    '''
+    Remove linebreaks from the start and end of field values. These can
+    sometimes be introduced into files and create problems for humans
+    because they are invisible.to human users.
+    '''
+    def apply(self, value):
+        return value.strip('\r\n')
+
+
 class ReplaceValue(Rule):
     '''
     Check if the value has a specified replacement. If it does, replace

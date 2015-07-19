@@ -60,6 +60,20 @@ class TestFloat(unittest.TestCase):
         self.assertEqual(self.rule.apply('1.23'), 1.23)
 
 
+class TestRemoveLinebreaks(unittest.TestCase):
+
+    def setUp(self):
+        self.rule = rigidity.rules.RemoveLinebreaks()
+
+    def test_apply_ending_linebreak(self):
+        self.assertEqual(self.rule.apply('hello\r\n'), 'hello')
+        self.assertEqual(self.rule.apply('hi\nworld\n'), 'hi\nworld')
+
+    def test_apply_starting_linebreak(self):
+        self.assertEqual(self.rule.apply('\r\nhello'), 'hello')
+        self.assertEqual(self.rule.apply('\nhi\nworld'), 'hi\nworld')
+
+
 class TestReplaceValue(unittest.TestCase):
 
     def test_apply(self):
