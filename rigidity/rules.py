@@ -60,6 +60,18 @@ class Float(Rule):
         return float(value)
 
 
+class NoneToEmptyString(Rule):
+    '''
+    Replace None values with an empty string. This is useful in cases
+    where legacy software uses None to create an empty cell, but your
+    other checks require a string.
+    '''
+    def apply(self, value):
+        if value is None:
+            return ''
+        return value
+
+
 class RemoveLinebreaks(Rule):
     '''
     Remove linebreaks from the start and end of field values. These can

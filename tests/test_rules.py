@@ -60,6 +60,14 @@ class TestFloat(unittest.TestCase):
         self.assertEqual(self.rule.apply('1.23'), 1.23)
 
 
+class TestNoneToEmptyString(unittest.TestCase):
+
+    def test_apply(self):
+        rule = rigidity.rules.NoneToEmptyString()
+        self.assertEqual(rule.apply(None), '')
+        self.assertEqual(rule.apply('hello'), 'hello')
+
+
 class TestRemoveLinebreaks(unittest.TestCase):
 
     def setUp(self):
