@@ -178,14 +178,29 @@ class TestDrop(unittest.TestCase):
 
 class TestStrip(unittest.TestCase):
 
-    def setUp(self):
-        self.rule = rigidity.rules.Strip()
-
     def test_apply_no_whitespace(self):
+        '''
+        Test that, under the default configuration, strings without
+        beginning or trailing whtiespace are preserved.
+        '''
+        self.rule = rigidity.rules.Strip()
         self.assertEqual(self.rule.apply('hello'), 'hello')
 
     def test_apply_with_whitespace(self):
+        '''
+        Test that, with the default configuration, whitespace is
+        removed from the beginning and end of the string.
+        '''
+        self.rule = rigidity.rules.Strip()
         self.assertEqual(self.rule.apply(' \thi \t'), 'hi')
+
+    def test_apply_custom_chars(self):
+        '''
+        Test that custom characters are accepted instead of the
+        default whitespace characters.
+        '''
+        self.rule = rigidity.rules.Strip('@!')
+        self.assertEqual(self.rule.apply(' hello@!'), ' hello')
 
 
 class TestUpcA(unittest.TestCase):

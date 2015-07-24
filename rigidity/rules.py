@@ -159,9 +159,14 @@ class Strip(Rule):
     '''
     Strip excess white space from the beginning and end of a value.
     '''
+    def __init__(self, chars=None):
+        if chars:
+            self.strip_args = [chars]
+        else:
+            self.strip_args = []
 
     def apply(self, value):
-        return value.strip()
+        return value.strip(*self.strip_args)
 
 
 class UpcA(Rule):
