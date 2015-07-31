@@ -50,6 +50,21 @@ class TestInteger(unittest.TestCase):
     def test_apply_string_integer(self):
         self.assertEqual(self.rule.apply('3'), 3)
 
+    def test_apply_invalid_integer(self):
+        self.assertRaises(Exception, self.rule.apply, 'a')
+
+
+class TestIntegerOrZero(unittest.TestCase):
+
+    def setUp(self):
+        self.rule = rigidity.rules.IntegerOrZero()
+
+    def test_apply_string_integer(self):
+        self.assertEqual(self.rule.apply('3'), 3)
+
+    def test_apply_invalid_integer(self):
+        self.assertEqual(self.rule.apply('a'), 0)
+
 
 class TestFloat(unittest.TestCase):
 
@@ -58,6 +73,21 @@ class TestFloat(unittest.TestCase):
 
     def test_apply_string_float(self):
         self.assertEqual(self.rule.apply('1.23'), 1.23)
+
+    def test_pply_invalid_float(self):
+        self.assertRaises(Exception, self.rule.apply, 'a')
+
+
+class TestFloatOrZero(unittest.TestCase):
+
+    def setUp(self):
+        self.rule = rigidity.rules.FloatOrZero()
+
+    def test_apply_string_float(self):
+        self.assertEqual(self.rule.apply('1.23'), 1.23)
+
+    def test_apply_invalid_float(self):
+        self.assertEqual(self.rule.apply('a'), 0.0)
 
 
 class TestNoneToEmptyString(unittest.TestCase):

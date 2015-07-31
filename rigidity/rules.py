@@ -51,6 +51,18 @@ class Integer(Rule):
         return int(value)
 
 
+class IntegerOrZero(Rule):
+    '''
+    Cast all data to ints; if the cast fails, replace with zero.
+    '''
+
+    def apply(self, value):
+        try:
+            return int(value)
+        except ValueError:
+            return 0
+
+
 class Float(Rule):
     '''
     Cast all data to floats or die trying.
@@ -58,6 +70,15 @@ class Float(Rule):
 
     def apply(self, value):
         return float(value)
+
+
+class FloatOrZero(Rule):
+
+    def apply(self, value):
+        try:
+            return float(value)
+        except ValueError:
+            return 0.0
 
 
 class NoneToEmptyString(Rule):
