@@ -42,6 +42,22 @@ class TestCapitalizeWords(unittest.TestCase):
         self.assertEqual(rule.apply('abc def-hij'), 'Abc Def-Hij')
 
 
+class TestContains(unittest.TestCase):
+
+    def test_apply_single_string(self):
+        rule = rigidity.rules.Contains('test')
+        self.assertEqual(rule.apply('.test.'), '.test.')
+        self.assertRaises(Exception, rule.apply, 'DoesNotContain')
+
+    def test_apply_list(self):
+        rule = rigidity.rules.Contains(['1', '2'])
+        self.assertEqual(rule.apply('12'), '12')
+        self.assertRaises(Exception, rule.apply, '23')
+
+    def test_apply_invalid(self):
+        self.assertRaises(Exception, rigidity.rules.Contains, None)
+
+
 class TestInteger(unittest.TestCase):
 
     def setUp(self):
