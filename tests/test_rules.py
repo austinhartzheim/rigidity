@@ -42,6 +42,22 @@ class TestCapitalizeWords(unittest.TestCase):
         self.assertEqual(rule.apply('abc def-hij'), 'Abc Def-Hij')
 
 
+class TestContains(unittest.TestCase):
+
+    def test_apply_single_string(self):
+        rule = rigidity.rules.Contains('test')
+        self.assertEqual(rule.apply('.test.'), '.test.')
+        self.assertRaises(Exception, rule.apply, 'DoesNotContain')
+
+    def test_apply_list(self):
+        rule = rigidity.rules.Contains(['1', '2'])
+        self.assertEqual(rule.apply('12'), '12')
+        self.assertRaises(Exception, rule.apply, '23')
+
+    def test_apply_invalid(self):
+        self.assertRaises(Exception, rigidity.rules.Contains, None)
+
+
 class TestInteger(unittest.TestCase):
 
     def setUp(self):
@@ -49,6 +65,21 @@ class TestInteger(unittest.TestCase):
 
     def test_apply_string_integer(self):
         self.assertEqual(self.rule.apply('3'), 3)
+
+    def test_apply_invalid_integer(self):
+        self.assertRaises(Exception, self.rule.apply, 'a')
+
+
+class TestIntegerOrZero(unittest.TestCase):
+
+    def setUp(self):
+        self.rule = rigidity.rules.IntegerOrZero()
+
+    def test_apply_string_integer(self):
+        self.assertEqual(self.rule.apply('3'), 3)
+
+    def test_apply_invalid_integer(self):
+        self.assertEqual(self.rule.apply('a'), 0)
 
 
 class TestFloat(unittest.TestCase):
@@ -58,6 +89,21 @@ class TestFloat(unittest.TestCase):
 
     def test_apply_string_float(self):
         self.assertEqual(self.rule.apply('1.23'), 1.23)
+
+    def test_pply_invalid_float(self):
+        self.assertRaises(Exception, self.rule.apply, 'a')
+
+
+class TestFloatOrZero(unittest.TestCase):
+
+    def setUp(self):
+        self.rule = rigidity.rules.FloatOrZero()
+
+    def test_apply_string_float(self):
+        self.assertEqual(self.rule.apply('1.23'), 1.23)
+
+    def test_apply_invalid_float(self):
+        self.assertEqual(self.rule.apply('a'), 0.0)
 
 
 class TestNoneToEmptyString(unittest.TestCase):

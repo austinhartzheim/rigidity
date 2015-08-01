@@ -42,6 +42,26 @@ class CapitalizeWords(Rule):
         return buffer.value
 
 
+class Contains(Rule):
+    '''
+    Check that a string field value contains the string (or all strings
+    in a list of strings) passed as a parameter to this rule.
+    '''
+    def __init__(self, string):
+        if isinstance(string, str):
+            self.strings = [string]
+        elif isinstance(string, (list, tuple)):
+            self.strings = string
+        else:
+            raise ValueError('string must be a string or a lsit')
+
+    def apply(self, value):
+        for string in self.strings:
+            if string not in value:
+                raise ValueError('String "%s" not in value' % string)
+        return value
+
+
 class Integer(Rule):
     '''
     Cast all data to ints or die trying.
@@ -51,6 +71,18 @@ class Integer(Rule):
         return int(value)
 
 
+class IntegerOrZero(Rule):
+    '''
+    Cast all data to ints; if the cast fails, replace with zero.
+    '''
+
+    def apply(self, value):
+        try:
+            return int(value)
+        except ValueError:
+            return 0
+
+
 class Float(Rule):
     '''
     Cast all data to floats or die trying.
@@ -58,6 +90,15 @@ class Float(Rule):
 
     def apply(self, value):
         return float(value)
+
+
+class FloatOrZero(Rule):
+
+    def apply(self, value):
+        try:
+            return float(value)
+        except ValueError:
+            return 0.0
 
 
 class NoneToEmptyString(Rule):
