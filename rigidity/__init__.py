@@ -8,6 +8,7 @@ This allows you to easily upgrade old software to use new, strict rules.
 '''
 
 import csv
+import rigidity.errors
 import rigidity.rules as rules
 
 
@@ -53,7 +54,10 @@ class Rigidity():
         exception if the validation or correction fails. Then, write the
         row to the CSV file.
         '''
-        self.csvobj.writerow(self.validate(row))
+        try:
+            self.csvobj.writerow(self.validate(row))
+        except rigidity.errors.DropRow:
+            return
 
     def writerows(self, rows):
         '''
@@ -101,7 +105,10 @@ class Rigidity():
 
     def __iter__(self):
         for row in iter(self.csvobj):
-            yield self.validate(row)
+            try:
+                yield self.validate(row)
+            except rigidity.errors.DropRow:
+                continue
 
     def __next__(self):
         '''
@@ -109,7 +116,10 @@ class Rigidity():
         repair the row it returns, raise an exception if the row cannot
         be repaired, and then return the row.
         '''
-        return self.validate(next(self.csvobj))
+        try:
+            return self.validate(next(self.csvobj))
+        except rigidity.errors.DropRow:
+            return next(self)
 
     def __getattr__(self, name):
         if hasattr(self.csvobj, name):
