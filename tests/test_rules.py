@@ -79,6 +79,10 @@ class TestInteger(unittest.TestCase):
         self.assertEqual(rule.apply('3'), 3)
         self.assertRaises(errors.DropRow, rule.apply, 'a')
 
+    def test_apply_action_invalid(self):
+        rule = rules.Integer(action=None)
+        self.assertRaises(Exception, rule.apply, 'a')
+
 
 class TestFloat(unittest.TestCase):
 
@@ -93,12 +97,16 @@ class TestFloat(unittest.TestCase):
     def tset_apply_action_zero(self):
         rule = rules.Float(action=rules.Float.ACTION_ZERO)
         self.assertEqual(rule.apply('1.23'), 1.23)
-        self.assertEqual(rule.apply('a'), 0)
+        self.assertEqual(rule.apply('a'), 0.0)
 
     def test_apply_action_droprow(self):
         rule = rules.Float(action=rules.Float.ACTION_DROPROW)
         self.assertEqual(rule.apply('1.23'), 1.23)
         self.assertRaises(errors.DropRow, rule.apply, 'a')
+
+    def test_apply_action_invalid(self):
+        rule = rules.Float(action=None)
+        self.assertRaises(Exception, rule.apply, 'a')
 
 
 class TestNoneToEmptyString(unittest.TestCase):
@@ -207,6 +215,11 @@ class TestUnique(unittest.TestCase):
         rule = rules.Unique(action=rules.Unique.ACTION_DROPROW)
         self.assertEquals(rule.apply('a'), 'a')
         self.assertRaises(errors.DropRow, rule.apply, 'a')
+
+    def test_apply_action_invalid(self):
+        rule = rules.Unique(action=None)
+        rule.apply('test')
+        self.assertRaises(Exception, rule.apply, 'test')
 
 
 class TestDrop(unittest.TestCase):
