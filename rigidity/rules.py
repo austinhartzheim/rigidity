@@ -1,4 +1,5 @@
 import ctypes
+import rigidity.errors
 
 
 class Rule():
@@ -34,9 +35,9 @@ class CapitalizeWords(Rule):
             buffer[0] = buffer[0].upper()
 
         # Search for all separators in the string
-        for i in range(0, len(buffer)-1):
+        for i in range(0, len(buffer) - 1):
             if buffer[i] in self.seperators:
-                buffer[i+1] = buffer[i+1].upper()
+                buffer[i + 1] = buffer[i + 1].upper()
 
         # Return the modified buffer
         return buffer.value
@@ -66,39 +67,50 @@ class Integer(Rule):
     '''
     Cast all data to ints or die trying.
     '''
+    ACTION_ERROR = 1
+    ACTION_ZERO = 2
+    ACTION_DROPROW = 3
 
-    def apply(self, value):
-        return int(value)
-
-
-class IntegerOrZero(Rule):
-    '''
-    Cast all data to ints; if the cast fails, replace with zero.
-    '''
+    def __init__(self, action=ACTION_ERROR):
+        self.action = action
 
     def apply(self, value):
         try:
             return int(value)
-        except ValueError:
-            return 0
+        except ValueError as err:
+            if self.action == self.ACTION_ERROR:
+                raise err
+            elif self.action == self.ACTION_ZERO:
+                return 0
+            elif self.action == self.ACTION_DROPROW:
+                raise rigidity.errors.DropRow()
+            else:
+                raise err
 
 
 class Float(Rule):
     '''
     Cast all data to floats or die trying.
     '''
+    ACTION_ERROR = 1
+    ACTION_ZERO = 2
+    ACTION_DROPROW = 3
 
-    def apply(self, value):
-        return float(value)
-
-
-class FloatOrZero(Rule):
+    def __init__(self, action=ACTION_ERROR):
+        self.action = action
 
     def apply(self, value):
         try:
             return float(value)
-        except ValueError:
-            return 0.0
+        except ValueError as err:
+            if self.action == self.ACTION_ERROR:
+                raise err
+            elif self.action == self.ACTION_ZERO:
+                return 0.0
+            elif self.action == self.ACTION_DROPROW:
+                raise rigidity.errors.DropRow()
+            else:
+                raise err
 
 
 class NoneToEmptyString(Rule):
@@ -177,12 +189,21 @@ class Unique(Rule):
     '''
     Only allow unique fields to pass.
     '''
-    def __init__(self):
+    ACTION_ERROR = 1
+    ACTION_DROPROW = 2
+
+    def __init__(self, action=ACTION_ERROR):
+        self.action = action
         self.encountered = []
 
     def apply(self, value):
         if value in self.encountered:
-            raise Exception('Value not unique')
+            if self.action == self.ACTION_ERROR:
+                raise Exception('Value not unique')
+            elif self.action == self.ACTION_DROPROW:
+                raise rigidity.errors.DropRow()
+            else:
+                raise Exception('Value not unique')
         self.encountered.append(value)
         return value
 

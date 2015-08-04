@@ -1,5 +1,6 @@
 import unittest
 import rigidity.rules
+from rigidity import rules, errors
 
 
 class TestRule(unittest.TestCase):
@@ -60,50 +61,44 @@ class TestContains(unittest.TestCase):
 
 class TestInteger(unittest.TestCase):
 
-    def setUp(self):
-        self.rule = rigidity.rules.Integer()
-
     def test_apply_string_integer(self):
-        self.assertEqual(self.rule.apply('3'), 3)
+        rule = rules.Integer()
+        self.assertEqual(rule.apply('3'), 3)
 
     def test_apply_invalid_integer(self):
-        self.assertRaises(Exception, self.rule.apply, 'a')
+        rule = rules.Integer()
+        self.assertRaises(Exception, rule.apply, 'a')
 
+    def test_apply_action_zero(self):
+        rule = rules.Integer(action=rules.Integer.ACTION_ZERO)
+        self.assertEqual(rule.apply('3'), 3)
+        self.assertEqual(rule.apply('a'), 0)
 
-class TestIntegerOrZero(unittest.TestCase):
-
-    def setUp(self):
-        self.rule = rigidity.rules.IntegerOrZero()
-
-    def test_apply_string_integer(self):
-        self.assertEqual(self.rule.apply('3'), 3)
-
-    def test_apply_invalid_integer(self):
-        self.assertEqual(self.rule.apply('a'), 0)
+    def test_apply_action_droprow(self):
+        rule = rules.Integer(action=rules.Integer.ACTION_DROPROW)
+        self.assertEqual(rule.apply('3'), 3)
+        self.assertRaises(errors.DropRow, rule.apply, 'a')
 
 
 class TestFloat(unittest.TestCase):
 
-    def setUp(self):
-        self.rule = rigidity.rules.Float()
-
     def test_apply_string_float(self):
-        self.assertEqual(self.rule.apply('1.23'), 1.23)
-
-    def test_pply_invalid_float(self):
-        self.assertRaises(Exception, self.rule.apply, 'a')
-
-
-class TestFloatOrZero(unittest.TestCase):
-
-    def setUp(self):
-        self.rule = rigidity.rules.FloatOrZero()
-
-    def test_apply_string_float(self):
-        self.assertEqual(self.rule.apply('1.23'), 1.23)
+        rule = rigidity.rules.Float()
+        self.assertEqual(rule.apply('1.23'), 1.23)
 
     def test_apply_invalid_float(self):
-        self.assertEqual(self.rule.apply('a'), 0.0)
+        rule = rigidity.rules.Float()
+        self.assertRaises(Exception, rule.apply, 'a')
+
+    def tset_apply_action_zero(self):
+        rule = rules.Float(action=rules.Float.ACTION_ZERO)
+        self.assertEqual(rule.apply('1.23'), 1.23)
+        self.assertEqual(rule.apply('a'), 0)
+
+    def test_apply_action_droprow(self):
+        rule = rules.Float(action=rules.Float.ACTION_DROPROW)
+        self.assertEqual(rule.apply('1.23'), 1.23)
+        self.assertRaises(errors.DropRow, rule.apply, 'a')
 
 
 class TestNoneToEmptyString(unittest.TestCase):
@@ -198,16 +193,20 @@ class TestStatic(unittest.TestCase):
 
 class TestUnique(unittest.TestCase):
 
-    def setUp(self):
-        self.rule = rigidity.rules.Unique()
-
     def test_apply_unique_data(self):
+        rule = rigidity.rules.Unique()
         for i in range(0, 10):
-            self.assertEqual(self.rule.apply(i), i)
+            self.assertEqual(rule.apply(i), i)
 
     def test_apply_repeat_data(self):
-        self.rule.apply(10)
-        self.assertRaises(Exception, self.rule.apply, 10)
+        rule = rigidity.rules.Unique()
+        rule.apply(10)
+        self.assertRaises(Exception, rule.apply, 10)
+
+    def test_apply_action_drop(self):
+        rule = rules.Unique(action=rules.Unique.ACTION_DROPROW)
+        self.assertEquals(rule.apply('a'), 'a')
+        self.assertRaises(errors.DropRow, rule.apply, 'a')
 
 
 class TestDrop(unittest.TestCase):
