@@ -10,6 +10,7 @@ except ImportError:
 
 import rigidity
 import rigidity.rules
+from rigidity import rules
 
 DATA_DIR = os.path.join(os.path.split(__file__)[0], 'data')
 
@@ -137,3 +138,15 @@ class TestRigidity(unittest.TestCase):
             r = rigidity.Rigidity(csv.reader(csvfile), rules)
             self.assertEqual(next(r), ['hello', 'world'])
             self.assertEqual(next(r), ['things', 'great'])
+
+
+class TestRigidityDropRow(unittest.TestCase):
+    '''
+    Test that the Rigidity class handles a DropRow exception correctly.
+    '''
+    def test_writerow(self):
+        writer = mock.MagicMock()
+        r_rules = [[rules.Integer(action=rules.Integer.ACTION_DROPROW)]]
+        r = rigidity.Rigidity(writer, r_rules)
+        r.writerow(['a'])
+        self.assertFalse(writer.writerow.called)
