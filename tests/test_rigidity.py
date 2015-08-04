@@ -82,11 +82,11 @@ class TestRigidity(unittest.TestCase):
             r.writerows([['a', 'b'], ['c', 'd']])
 
     def test___getattr___invalid_attribute(self):
-        r = rigidity.Rigidity(mock.MagicMock, [[], []])
+        r = rigidity.Rigidity(None, [[], []])
         self.assertRaises(AttributeError, getattr, r, 'does_not_exist')
 
     def test___delattr___invalid_attribute(self):
-        r = rigidity.Rigidity(mock.MagicMock, [[], []])
+        r = rigidity.Rigidity(None, [[], []])
         self.assertRaises(AttributeError, delattr, r, 'does_not_exist')
 
     # Tests with actual data
