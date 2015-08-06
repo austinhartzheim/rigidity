@@ -49,6 +49,10 @@ class TestBoolean(unittest.TestCase):
         rule = rules.Boolean(action=rules.Boolean.ACTION_DROPROW)
         self.assertRaises(errors.DropRow, rule.apply, 'a')
 
+    def test_apply_action_invalid(self):
+        rule = rules.Boolean(action=None)
+        self.assertRaises(ValueError, rule.apply, 'a')
+
 
 class TestCapitalizeWords(unittest.TestCase):
 
