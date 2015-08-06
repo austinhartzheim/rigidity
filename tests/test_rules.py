@@ -15,6 +15,41 @@ class TestRule(unittest.TestCase):
         self.assertEqual(self.rule.apply('hello'), 'hello')
 
 
+class TestBoolean(unittest.TestCase):
+
+    def test_apply_string_boolean(self):
+        rule = rules.Boolean()
+        self.assertTrue(rule.apply('true'))
+        self.assertTrue(rule.apply('yes'))
+        self.assertTrue(rule.apply('t'))
+        self.assertTrue(rule.apply('1'))
+        self.assertFalse(rule.apply('false'))
+        self.assertFalse(rule.apply('no'))
+        self.assertFalse(rule.apply('f'))
+        self.assertFalse(rule.apply('0'))
+        self.assertRaises(ValueError, rule.apply, 'null')
+        self.assertRaises(ValueError, rule.apply, 'none')
+        self.assertRaises(ValueError, rule.apply, '')
+
+    def test_apply_invalid_boolean(self):
+        rule = rules.Boolean()
+        self.assertRaises(ValueError, rule.apply, 'a')
+
+    def test_apply_allow_null(self):
+        rule = rules.Boolean(allow_null=True)
+        self.assertIs(None, rule.apply('null'))
+        self.assertIs(None, rule.apply('none'))
+        self.assertIs(None, rule.apply(''))
+
+    def test_apply_action_default(self):
+        rule = rules.Boolean(action=rules.Boolean.ACTION_DEFAULT, default='t')
+        self.assertEqual('t', rule.apply('a'))
+
+    def test_apply_action_droprow(self):
+        rule = rules.Boolean(action=rules.Boolean.ACTION_DROPROW)
+        self.assertRaises(errors.DropRow, rule.apply, 'a')
+
+
 class TestCapitalizeWords(unittest.TestCase):
 
     def test_apply(self):
