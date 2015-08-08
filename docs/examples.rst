@@ -1,5 +1,5 @@
-Rigidity Examples
-=================
+Examples
+========
 
 This page includes examples of how to use Rigidity in your own projects.
 
