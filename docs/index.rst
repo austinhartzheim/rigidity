@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    examples.rst
+   code.rst
 
 Indices and tables
 ==================
