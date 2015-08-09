@@ -103,6 +103,13 @@ class Rigidity():
         # Return the updated data
         return row
 
+    def skip(self):
+        '''
+        Return a row, skipping validation. This is useful when you want
+        to skip validation of header information.
+        '''
+        return next(self.csvobj)
+
     def __iter__(self):
         for row in iter(self.csvobj):
             try:
