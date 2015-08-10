@@ -75,6 +75,18 @@ class Boolean(Rule):
                 raise ValueError('Value was not a boolean value')
 
 
+class Bytes(Rule):
+    '''
+    Encode a string as a bytes object.
+    '''
+
+    def __init__(self, encoding='utf8'):
+        self.encoding = encoding
+
+    def apply(self, value):
+        return bytes(value, self.encoding)
+
+
 class Contains(Rule):
     '''
     Check that a string field value contains the string (or all strings
