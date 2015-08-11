@@ -43,6 +43,50 @@ class CapitalizeWords(Rule):
         return buffer.value
 
 
+class Boolean(Rule):
+    '''
+    Cast a string as a boolean value.
+    '''
+    ACTION_ERROR = 1
+    ACTION_DEFAULT = 2
+    ACTION_DROPROW = 3
+
+    def __init__(self, allow_null=False, action=ACTION_ERROR, default=None):
+        self.allow_null = allow_null
+        self.default = default
+        self.action = action
+
+    def apply(self, value):
+        lvalue = str(value).lower()
+        if lvalue in ('true', 'yes', 't', '1'):
+            return True
+        elif lvalue in ('false', 'no', 'f', '0'):
+            return False
+        elif self.allow_null and lvalue in ('null', 'none', ''):
+            return None
+        else:
+            if self.action == self.ACTION_ERROR:
+                raise ValueError('Value was not a boolean value')
+            elif self.action == self.ACTION_DEFAULT:
+                return self.default
+            elif self.action == self.ACTION_DROPROW:
+                raise rigidity.errors.DropRow()
+            else:
+                raise ValueError('Value was not a boolean value')
+
+
+class Bytes(Rule):
+    '''
+    Encode a string as a bytes object.
+    '''
+
+    def __init__(self, encoding='utf8'):
+        self.encoding = encoding
+
+    def apply(self, value):
+        return bytes(value, self.encoding)
+
+
 class Contains(Rule):
     '''
     Check that a string field value contains the string (or all strings
