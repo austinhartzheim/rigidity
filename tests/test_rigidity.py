@@ -31,6 +31,26 @@ class TestRigidity(unittest.TestCase):
         data1 = [['a', 'b'], ['c', 'd']]
         self.assertEqual(r.validate(data1), data1)
 
+    def test_validate_read_no_rules(self):
+        '''
+        Test that the validate_read() method does not change the data
+        if no rules are provided.
+        '''
+        r = rigidity.Rigidity(csv.reader(tempfile.TemporaryFile()), [[], []])
+
+        data1 = [['a', 'b'], ['c', 'd']]
+        self.assertEqual(r.validate_read(data1), data1)
+
+    def test_validate_write_no_rules(self):
+        '''
+        Test that the validate_write() method does not change the data
+        if no rules are provided.
+        '''
+        r = rigidity.Rigidity(csv.reader(tempfile.TemporaryFile()), [[], []])
+
+        data1 = [['a', 'b'], ['c', 'd']]
+        self.assertEqual(r.validate_write(data1), data1)
+
     def test_validate_dict_no_rules(self):
         '''
         Test that the validate method works correctly on Dict rows when
@@ -40,6 +60,26 @@ class TestRigidity(unittest.TestCase):
                               {'a': [], 'b': []})
         data1 = {'a': 'hello', 'b': 'world'}
         self.assertDictEqual(r.validate(data1), data1)
+
+    def test_validate_dict_read_no_rules(self):
+        '''
+        Test that the validate_read() method works correctly on Dict
+        rows when the rules Dict is empty.
+        '''
+        r = rigidity.Rigidity(csv.reader(tempfile.TemporaryFile()),
+                              {'a': [], 'b': []})
+        data1 = {'a': 'hello', 'b': 'world'}
+        self.assertDictEqual(r.validate_read(data1), data1)
+
+    def test_validate_dict_write_no_rules(self):
+        '''
+        Test that the validate_write() method works correctly on Dict
+        rows when the rules Dict is empty.
+        '''
+        r = rigidity.Rigidity(csv.reader(tempfile.TemporaryFile()),
+                              {'a': [], 'b': []})
+        data1 = {'a': 'hello', 'b': 'world'}
+        self.assertDictEqual(r.validate_write(data1), data1)
 
     def test_writeheader(self):
         '''
