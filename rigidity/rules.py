@@ -11,6 +11,12 @@ class Rule():
     def apply(self, value):
         return value
 
+    def read(self, value):
+        return self.apply(value)
+
+    def write(self, value):
+        return self.apply(value)
+
 
 class CapitalizeWords(Rule):
     '''
