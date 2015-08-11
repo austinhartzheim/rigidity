@@ -78,6 +78,13 @@ class Rigidity():
     # New methods, not part of the `csv` interface
     def validate(self, row):
         '''
+        .. warning::
+           This method is deprecated and will be removed in a future
+           release; it is included only to support old code. It will
+           not produce consistent results with bi-directional rules.
+           You should use :meth:`validate_read` or
+           :meth:`validate_write` instead.
+
         Validate that the row conforms with the specified rules,
         correcting invalid rows where the rule is able to do so.
 
@@ -97,7 +104,64 @@ class Rigidity():
         for key in self.keys:
             value = row[key]
             for rule in self.rules[key]:
-                value = rule.apply(value)
+                if hasattr(rule, 'apply'):
+                    value = rule.apply(value)
+                else:
+                    return rule.read(value)
+            row[key] = value
+
+        # Return the updated data
+        return row
+
+    def validate_write(self, row):
+        '''
+        Validate that the row conforms with the specified rules,
+        correcting invalid rows where the rule is able to do so.
+
+        If the row is valid or can be made valid through corrections,
+        this method will return a row that can be written to the CSV
+        file. If the row is invalid and cannot be corrected, then this
+        method will raise an exception.
+
+        :param row: a row object that can be passed to a CSVWriter's
+          writerow() method.
+        '''
+        # Ensure mutability - I'm looking at you, tuples!
+        if not isinstance(row, (list, dict)):
+            row = list(row)
+
+        # Iterate through all keys, updating the data
+        for key in self.keys:
+            value = row[key]
+            for rule in self.rules[key]:
+                value = rule.write(value)
+            row[key] = value
+
+        # Return the updated data
+        return row
+
+    def validate_read(self, row):
+        '''
+        Validate that the row conforms with the specified rules,
+        correcting invalid rows where the rule is able to do so.
+
+        If the row is valid or can be made valid through corrections,
+        this method will return a row that can be written to the CSV
+        file. If the row is invalid and cannot be corrected, then this
+        method will raise an exception.
+
+        :param row: a row object that can be passed to a CSVWriter's
+          writerow() method.
+        '''
+        # Ensure mutability - I'm looking at you, tuples!
+        if not isinstance(row, (list, dict)):
+            row = list(row)
+
+        # Iterate through all keys, updating the data
+        for key in self.keys:
+            value = row[key]
+            for rule in self.rules[key]:
+                value = rule.read(value)
             row[key] = value
 
         # Return the updated data
