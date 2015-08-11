@@ -77,14 +77,18 @@ class Boolean(Rule):
 
 class Bytes(Rule):
     '''
-    Encode a string as a bytes object.
+    When reading data, encode it as a bytes object using the given
+    encoding. When writing data, decode it using the given encoding.
     '''
 
     def __init__(self, encoding='utf8'):
         self.encoding = encoding
 
-    def apply(self, value):
-        return bytes(value, self.encoding)
+    def read(self, value):
+        return value.encode(self.encoding)
+
+    def write(self, value):
+        return value.decode(self.encoding)
 
 
 class Contains(Rule):

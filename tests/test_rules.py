@@ -56,21 +56,37 @@ class TestBoolean(unittest.TestCase):
 
 class TestBytes(unittest.TestCase):
 
-    def test_apply(self):
+    def test_read(self):
         rule = rules.Bytes()
-        self.assertEqual(rule.apply('hello'), b'hello')
+        self.assertEqual(rule.read('hello'), b'hello')
 
-    def test_apply_utf16(self):
+    def test_read_utf16(self):
         rule = rules.Bytes('utf16')
-        self.assertEqual(rule.apply('hello'), 'hello'.encode('utf16'))
+        self.assertEqual(rule.read('hello'), 'hello'.encode('utf16'))
 
-    def test_apply_encoding_mismatch(self):
+    def test_read_encoding_mismatch(self):
         '''
         Attempt to encode a unicode character with the ASCII encoding
         and assert that this raises an error.
         '''
         rule = rules.Bytes('ascii')
-        self.assertRaises(ValueError, rule.apply, 'ጷ')
+        self.assertRaises(ValueError, rule.read, 'ጷ')
+
+    def test_write(self):
+        rule = rules.Bytes()
+        self.assertEqual(rule.write(b'hello'), 'hello')
+
+    def test_write_utf16(self):
+        rule = rules.Bytes('utf16')
+        self.assertEqual(rule.write('hello'.encode('utf16')), 'hello')
+
+    def test_write_encoding_mismatch(self):
+        '''
+        Attempt to decode a unicode character with the ASCII encoding
+        and assert that this raises an error.
+        '''
+        rule = rules.Bytes('ascii')
+        self.assertRaises(ValueError, rule.write, 'ጷ'.encode('utf8'))
 
 
 class TestCapitalizeWords(unittest.TestCase):
