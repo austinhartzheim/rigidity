@@ -55,7 +55,7 @@ class Rigidity():
         row to the CSV file.
         '''
         try:
-            self.csvobj.writerow(self.validate(row))
+            self.csvobj.writerow(self.validate_write(row))
         except rigidity.errors.DropRow:
             return
 
@@ -188,7 +188,7 @@ class Rigidity():
         be repaired, and then return the row.
         '''
         try:
-            return self.validate(next(self.csvobj))
+            return self.validate_read(next(self.csvobj))
         except rigidity.errors.DropRow:
             return next(self)
 
