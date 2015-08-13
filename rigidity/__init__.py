@@ -64,12 +64,12 @@ class Rigidity():
         Validate and correct the data provided in every row and raise an
         exception if the validation or correction fails.
 
-        NOTE::
+        .. note::
           Behavior in the case that the data is invalid and cannot be
           repaired is undefined. For example, the implementation may
           choose to write all valid rows up until the error, or it may
           choose to only conduct the write operation after all rows have
-          een verified. Do not depend on the presense or absense of any
+          been verified. Do not depend on the presence or absence of any
           of the rows in `rows` in the event that an exception occurs.
         '''
         for row in rows:
