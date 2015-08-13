@@ -16,8 +16,6 @@ class Rigidity():
     '''
     A wrapper for CSV readers and writers that allows
     '''
-    # TODO: Investigate of DictReaders and DictWriters can be handled in
-    #   the same class or if another class is required.
 
     csvobj = None  # Declare here to prevent getattr/setattr recursion
 
@@ -124,7 +122,7 @@ class Rigidity():
         method will raise an exception.
 
         :param row: a row object that can be passed to a CSVWriter's
-          writerow() method.
+          __next__() method.
         '''
         # Ensure mutability - I'm looking at you, tuples!
         if not isinstance(row, (list, dict)):
@@ -150,8 +148,8 @@ class Rigidity():
         file. If the row is invalid and cannot be corrected, then this
         method will raise an exception.
 
-        :param row: a row object that can be passed to a CSVWriter's
-          writerow() method.
+        :param row: a row object that can be returned from CSVReader's
+          readrow() method.
         '''
         # Ensure mutability - I'm looking at you, tuples!
         if not isinstance(row, (list, dict)):
