@@ -8,6 +8,7 @@ With Rigidity, you can easily construct validation and correction rulesets to be
    :maxdepth: 2
 
    examples.rst
+   creating_rules.rst
    code.rst
 
 Indices and tables

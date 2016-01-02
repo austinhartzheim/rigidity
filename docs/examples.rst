@@ -23,7 +23,7 @@ It would be much more readable in the following form, and could even be included
    Brave New World,Aldous Huxley
    Nineteen Eighty-Four,George Orwell
 
-Rigidity's `CapitalizeWords` rule allows for slective capitalization of certain letters. By default, it capitalizes the characters following whitespace. But, we need to capitalize words following hyphens as well (in the case of Nineteen Eighty-Four). Here is how we do it::
+Rigidity's `CapitalizeWords` rule allows for selective capitalization of certain letters. By default, it capitalizes the characters following whitespace. But, we need to capitalize words following hyphens as well (in the case of Nineteen Eighty-Four). Here is how we do it::
 
    import csv
    import rigidity
@@ -41,7 +41,7 @@ Rigidity's `CapitalizeWords` rule allows for slective capitalization of certain 
    for row in r:
        print(', '.join(row))
 
-The `CapitalizeWords` rule only performs selective capitalization. So, we need to use the `Lower` rule to convert the entire string to lower-case first. We also tell the rule to capitalize all letters immediately following a space character or a hyphen, which allows us to correctly capitalize "Ninteen Eighty-Four."
+The `CapitalizeWords` rule only performs selective capitalization. So, we need to use the `Lower` rule to convert the entire string to lower-case first. We also tell the rule to capitalize all letters immediately following a space character or a hyphen, which allows us to correctly capitalize "Nineteen Eighty-Four."
 
 UPC Validation
 --------------
