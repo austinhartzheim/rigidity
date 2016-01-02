@@ -7,10 +7,11 @@ With Rigidity, you can easily construct validation and correction rulesets to be
 .. toctree::
    :maxdepth: 2
 
+   installing.rst
    examples.rst
    creating_rules.rst
    code.rst
-
+   
 Indices and tables
 ==================
 
