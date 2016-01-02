@@ -4,7 +4,7 @@ python:
   - "3.3"
   - "3.4"
 install:
-  - pip install coveralls codecov
+  - pip install coverage<4 coveralls codecov
 script:
   - nosetests --with-coverage --cover-package=rigidity
 after_success:
