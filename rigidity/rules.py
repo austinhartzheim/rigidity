@@ -9,12 +9,56 @@ class Rule():
     '''
 
     def apply(self, value):
+        '''
+        This is the default method for applying a rule to data. By
+        default, the `read()` and `write()` methods will use this
+        method to validate and modify data.
+
+        :param value: the data to be validated.
+        :returns: the validated and possibly modified value as
+          documented by the rule.
+        :raises rigidity.errors.DropRow: when the rule wants to
+          cancel processing of an entire row, it may do so with
+          the DropRow error. This signifies to the
+          :class:`rigidity.Rigidity` class that it should
+          discontinue processing the row.
+        '''
         return value
 
     def read(self, value):
+        '''
+        When reading data, it is validated with this method. By
+        default, this method calls the `apply()` method of this
+        class. However, you may override this method to achieve
+        different behavior when reading and writing.
+
+        :param value: the data to be validated.
+        :returns: the validated and possibly modified value as
+          documented by the rule.
+        :raises rigidity.errors.DropRow: when the rule wants to
+          cancel processing of an entire row, it may do so with
+          the DropRow error. This signifies to the
+          :class:`rigidity.Rigidity` class that it should
+          discontinue processing the row.
+        '''
         return self.apply(value)
 
     def write(self, value):
+        '''
+        When writing data, it is validated with this method. By
+        default, this method calls the `apply()` method of this
+        class. However, you may override this method to achieve
+        different behavior when reading and writing.
+
+        :param value: the data to be validated.
+        :returns: the validated and possibly modified value as
+          documented by the rule.
+        :raises rigidity.errors.DropRow: when the rule wants to
+          cancel processing of an entire row, it may do so with
+          the DropRow error. This signifies to the
+          :class:`rigidity.Rigidity` class that it should
+          discontinue processing the row.
+        '''
         return self.apply(value)
 
 
@@ -230,7 +274,8 @@ class ReplaceValue(Rule):
 
 class Static(Rule):
     '''
-    Replace a field's value with a static value.
+    Replace a field's value with a static value declared during
+    initialization.
     '''
     def __init__(self, value):
         self.static_value = value
@@ -241,7 +286,8 @@ class Static(Rule):
 
 class Unique(Rule):
     '''
-    Only allow unique fields to pass.
+    Only allow unique values to pass. When a repeated value is found,
+    the row may be dropped or an error may be raised.
     '''
     ACTION_ERROR = 1
     ACTION_DROPROW = 2
@@ -264,7 +310,8 @@ class Unique(Rule):
 
 class Drop(Rule):
     '''
-    Drop the data in this column.
+    Drop the data in this column, replacing all data with an empty
+    string value.
     '''
 
     def apply(self, value):
@@ -287,10 +334,15 @@ class Strip(Rule):
 
 class UpcA(Rule):
     '''
-    Validate UPC-A barscode numbers to ensure that they are 12 digits,
+    Validate UPC-A barscode numbers to ensure that they are 12 digits.
+    Strict validation of the check digit may also be enabled.
     '''
 
     def __init__(self, strict=False):
+        '''
+        :param bool strict: If `true`, raise a ValueError if the given
+          UPC code fails the check digit validation.
+        '''
         self.strict = strict
 
     def apply(self, value):
@@ -298,6 +350,9 @@ class UpcA(Rule):
         Cast the value to a string, then check that it is numeric.
         Afterwards, zero-pad the left side to reach the standard length
         of 12 digits.
+
+        :raises ValueError: when strict mode is enabled and the given
+          UPC code fails the check digit validation.
         '''
         value = str(value)
         if not value.isdigit():

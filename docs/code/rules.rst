@@ -5,5 +5,5 @@ This submodule contains the built-in rules that are used for filtering and modif
 
 .. automodule:: rigidity.rules
    :members:
-   :inherited-members:
    :show-inheritance:
+   :special-members: __init__
