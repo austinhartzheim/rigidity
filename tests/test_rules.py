@@ -227,7 +227,7 @@ class TestReplaceValue(unittest.TestCase):
         available replacement.
         '''
         rule = rigidity.rules.ReplaceValue(missing_action=rigidity.rules.ReplaceValue.ACTION_DROP)
-        self.assertEqual(rule.apply('anystring'), '')
+        self.assertRaises(errors.DropRow, rule.apply, 'anystring')
 
     def test_apply_default_value(self):
         '''

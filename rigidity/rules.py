@@ -73,6 +73,12 @@ class CapitalizeWords(Rule):
     SEPERATORS = ' \t\n\r'
 
     def __init__(self, seperators=SEPERATORS, cap_first=True):
+        '''
+        :param str seperators: capitalize any character following a
+          character in this string.
+        :param bool cap_first: automatically capitalize the first
+          character in the string.
+        '''
         self.seperators = seperators
         self.cap_first = cap_first
 
@@ -97,11 +103,18 @@ class Boolean(Rule):
     '''
     Cast a string as a boolean value.
     '''
+    #: When invalid data is encountered, raise an exception.
     ACTION_ERROR = 1
+    #: When invalid data is encountered, return a set defaut value.
     ACTION_DEFAULT = 2
+    #: When invalid data is encountered, drop the row.
     ACTION_DROPROW = 3
 
     def __init__(self, allow_null=False, action=ACTION_ERROR, default=None):
+        '''
+        :param action: take the behavior indicated by ACTION_ERROR,
+          ACTION_DEFAULT, or ACTION_DROPROW.
+        '''
         self.allow_null = allow_null
         self.default = default
         self.action = action
@@ -165,11 +178,18 @@ class Integer(Rule):
     '''
     Cast all data to ints or die trying.
     '''
+    #: When invalid data is encountered, raise an exception.
     ACTION_ERROR = 1
+    #: When invalid data is encountered, return zero.
     ACTION_ZERO = 2
+    #: When invalid data is encountered, drop the row.
     ACTION_DROPROW = 3
 
     def __init__(self, action=ACTION_ERROR):
+        '''
+        :param action: take the behavior indicated by ACTION_ERROR,
+          ACTION_ZERO, or ACTION_DROPROW.
+        '''
         self.action = action
 
     def apply(self, value):
@@ -190,11 +210,18 @@ class Float(Rule):
     '''
     Cast all data to floats or die trying.
     '''
+    #: When invalid data is encountered, raise an exception.
     ACTION_ERROR = 1
+    #: When invalid data is encountered, return zero.
     ACTION_ZERO = 2
+    #: When invalid data is encountered, drop the row.
     ACTION_DROPROW = 3
 
     def __init__(self, action=ACTION_ERROR):
+        '''
+        :param action: take the behavior indicated by ACTION_ERROR,
+          ACTION_ZERO, or ACTION_DROPROW.
+        '''
         self.action = action
 
     def apply(self, value):
@@ -237,31 +264,40 @@ class ReplaceValue(Rule):
     '''
     Check if the value has a specified replacement. If it does, replace
     it with that value. If it does not, take one of the following
-    configurable actions: pass it through unmodified, drop the value,
+    configurable actions: pass it through unmodified, drop the row,
     or use a default value.
     '''
-    # These variables are equal; see comment in __init__ about how
-    #   ACTION_DROP is implemented by using ACTION_DEFAULT_VALUE.
+    #: When no replacement is found, drop the row.
     ACTION_DROP = 1
+    #: When no replacement is found, return a set default value.
     ACTION_DEFAULT_VALUE = 2
+    #: When no replacement is found, allow the original to pass through.
     ACTION_PASSTHROUGH = 3
+    #: When no replacement is found, raise an exception.
     ACTION_ERROR = 4
 
     def __init__(self, replacements={}, missing_action=ACTION_ERROR,
                  default_value=''):
+        '''
+        :param dict replacements: a mapping between original values
+          and replacement values.
+        :param missing_action: when a replacement is not found for a
+          value, take the behavior specified by the specified value,
+          such as ACTION_DROP, ACTION_DEFAULT_VALUE,
+          ACTION_PASSTHROUGH, or ACTION_ERROR.
+        :param default_value: if ACTION_DEFAULT_VALUE is the missing
+          replacement behavior, use this variable as the default
+          replacement value.
+        '''
         self.replacements = replacements
         self.missing_action = missing_action
         self.default_value = default_value
 
-        # Implement dropping by using a default value of an empty string;
-        #   this effectively drops the value.
-        if missing_action == self.ACTION_DROP:
-            self.missing_action = self.ACTION_DEFAULT_VALUE
-            self.default_value = ''
-
     def apply(self, value):
         if value in self.replacements:
             return self.replacements[value]
+        elif self.missing_action == self.ACTION_DROP:
+            raise rigidity.errors.DropRow()
         elif self.missing_action == self.ACTION_PASSTHROUGH:
             return value
         elif self.missing_action == self.ACTION_DEFAULT_VALUE:
@@ -289,10 +325,16 @@ class Unique(Rule):
     Only allow unique values to pass. When a repeated value is found,
     the row may be dropped or an error may be raised.
     '''
+    #: When repeat data is encountered, raise an exception.
     ACTION_ERROR = 1
+    #: When repeat data is encountered, drop the row.
     ACTION_DROPROW = 2
 
     def __init__(self, action=ACTION_ERROR):
+        '''
+        :param action: Accepts either ACTION_ERROR or ACTION_DROPROW as
+          the behavior to be performed when a value is not unique.
+        '''
         self.action = action
         self.encountered = []
 
