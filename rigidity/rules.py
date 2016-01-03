@@ -277,6 +277,8 @@ class ReplaceValue(Rule):
     ACTION_ERROR = 4
     #: When no replacement is found, return an empty string.
     ACTION_BLANK = 5
+    #: .. warning:: ACTION_DROP is deprecated due to the name being similar
+    #:    to ACTION_DROPROW. Use ACTION_BLANK instead.
     ACTION_DROP = ACTION_BLANK  # Legacy support for v1.2.0; depreciated
 
     def __init__(self, replacements={}, missing_action=ACTION_ERROR,
