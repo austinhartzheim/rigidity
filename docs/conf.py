@@ -59,7 +59,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Rigidity'
-copyright = '2015, Austin Hartzheim'
+copyright = '2015-2016, Austin Hartzheim'
 author = 'Austin Hartzheim'
 
 # The version info for the project you're documenting, acts as replacement for
