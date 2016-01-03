@@ -268,13 +268,16 @@ class ReplaceValue(Rule):
     or use a default value.
     '''
     #: When no replacement is found, drop the row.
-    ACTION_DROP = 1
+    ACTION_DROPROW = 1
     #: When no replacement is found, return a set default value.
     ACTION_DEFAULT_VALUE = 2
     #: When no replacement is found, allow the original to pass through.
     ACTION_PASSTHROUGH = 3
     #: When no replacement is found, raise an exception.
     ACTION_ERROR = 4
+    #: When no replacement is found, return an empty string.
+    ACTION_BLANK = 5
+    ACTION_DROP = ACTION_BLANK  # Legacy support for v1.2.0; depreciated
 
     def __init__(self, replacements={}, missing_action=ACTION_ERROR,
                  default_value=''):
@@ -293,10 +296,14 @@ class ReplaceValue(Rule):
         self.missing_action = missing_action
         self.default_value = default_value
 
+        if missing_action == self.ACTION_BLANK:
+            self.missing_action = self.ACTION_DEFAULT_VALUE
+            self.default_value = ''
+
     def apply(self, value):
         if value in self.replacements:
             return self.replacements[value]
-        elif self.missing_action == self.ACTION_DROP:
+        elif self.missing_action == self.ACTION_DROPROW:
             raise rigidity.errors.DropRow()
         elif self.missing_action == self.ACTION_PASSTHROUGH:
             return value

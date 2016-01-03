@@ -226,7 +226,7 @@ class TestReplaceValue(unittest.TestCase):
         an empty string is returned when the value does not have an
         available replacement.
         '''
-        rule = rigidity.rules.ReplaceValue(missing_action=rigidity.rules.ReplaceValue.ACTION_DROP)
+        rule = rigidity.rules.ReplaceValue(missing_action=rigidity.rules.ReplaceValue.ACTION_DROPROW)
         self.assertRaises(errors.DropRow, rule.apply, 'anystring')
 
     def test_apply_default_value(self):
@@ -254,6 +254,15 @@ class TestReplaceValue(unittest.TestCase):
         rule = rigidity.rules.ReplaceValue(missing_action=rigidity.rules.ReplaceValue.ACTION_ERROR)
         self.assertRaises(IndexError, rule.apply, 'anystring')
         self.assertRaises(IndexError, rule.apply, 10)
+
+    def test_apply_blank(self):
+        '''
+        Test that when the missing_action is the blank behavior, an
+        empty string is returned when the value does not have a
+        replacement.
+        '''
+        rule = rigidity.rules.ReplaceValue(missing_action=rules.ReplaceValue.ACTION_BLANK)
+        self.assertEqual(rule.apply('anystring'), '')
 
     def test_apply_invalid_missing_action(self):
         '''
