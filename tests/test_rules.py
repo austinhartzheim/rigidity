@@ -117,6 +117,52 @@ class TestCapitalizeWords(unittest.TestCase):
         self.assertEqual(rule.apply('abc def-hij'), 'Abc Def-Hij')
 
 
+class TestCary(unittest.TestCase):
+
+    def test_apply_normal_case(self):
+        '''
+        Test that values are properly carried into empty rows.
+        '''
+        rule = rigidity.rules.Cary()
+        self.assertEqual(rule.apply('test'), 'test',
+                         'Rule does not allow values to pass through')
+        self.assertEqual(rule.apply(''), 'test', 'Rule does not cary values')
+        self.assertEqual(rule.apply(''), 'test', 'Rule incorrectly caries')
+        self.assertEqual(rule.apply('test2'), 'test2',
+                         'Rule does not adopt new values to cary')
+        self.assertEqual(rule.apply(''), 'test2',
+                         'Rule does not preserve adopted values')
+
+    def test_apply_action_error(self):
+        '''
+        Test that errors are raised when no replacement value exists.
+        '''
+        rule = rigidity.rules.Cary(action=rigidity.rules.Cary.ACTION_ERROR)
+        self.assertRaises(ValueError, rule.apply, '')
+
+    def test_apply_action_default(self):
+        '''
+        Test that default values are used when no substitutions exist.
+        '''
+        rule = rigidity.rules.Cary(action=rigidity.rules.Cary.ACTION_DEFAULT,
+                                   default='default')
+        self.assertEqual(rule.apply(''), 'default', 'Default value not used')
+        self.assertEqual(rule.apply('test'), 'test',
+                         'Rule does not allow values to pass through')
+        self.assertEqual(rule.apply(''), 'test',
+                         'Rule does not cary non-default values')
+
+    def test_apply_action_droprow(self):
+        '''
+        Test that rows are dropped when no substitutions exist.
+        '''
+        rule = rigidity.rules.Cary(action=rigidity.rules.Cary.ACTION_DROPROW)
+        self.assertRaises(rigidity.errors.DropRow, rule.apply, '')
+        self.assertEqual(rule.apply('test'), 'test',
+                         'Rule does not allow values to pass through')
+        self.assertEqual(rule.apply(''), 'test', 'Rule does not cary values')
+
+
 class TestContains(unittest.TestCase):
 
     def test_apply_single_string(self):

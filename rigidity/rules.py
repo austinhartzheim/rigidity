@@ -99,6 +99,46 @@ class CapitalizeWords(Rule):
         return buffer.value
 
 
+class Cary(Rule):
+    '''
+    Cary values into subsequent rows lacking values in their column.
+    '''
+    #: When an empty cell is encountered and no previous fill value is
+    #: available, throw an error.
+    ACTION_ERROR = 1
+    #: Until a value is encountered, use a default value to fill empty
+    #: cells.
+    ACTION_DEFAULT = 2
+    #: When an empty cell is encountered and no other value is available
+    #: to fill the cell, drop the row.
+    ACTION_DROPROW = 3
+
+    def __init__(self, action=ACTION_ERROR, default=None):
+        '''
+        :param action: take the behavior indicated by ACTION_ERROR,
+          ACTION_DEFAULT, or ACTION_DROPROW.
+        '''
+        self.action = action
+        self.previous_available = False
+        self.previous = default
+
+        if action == self.ACTION_DEFAULT:
+            self.previous_available = True
+
+    def apply(self, value):
+        if value is None or value == '':
+            if self.previous_available:
+                return self.previous
+            elif self.action == self.ACTION_ERROR:
+                raise ValueError('Empty cell encountered before a value.')
+            elif self.action == self.ACTION_DROPROW:
+                raise rigidity.errors.DropRow()
+        else:
+            self.previous = value
+            self.previous_available = True
+            return value
+
+
 class Boolean(Rule):
     '''
     Cast a string as a boolean value.
