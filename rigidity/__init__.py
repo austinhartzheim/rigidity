@@ -18,7 +18,7 @@ class Rigidity():
 
     csvobj = None  # Declare here to prevent getattr/setattr recursion
 
-    def __init__(self, csvobj, rules=[]):
+    def __init__(self, csvobj, rules=[], explain=False):
         '''
         :param csvfile: a Reader or Writer object from the csv module;
           any calls to this object's methods will be wrapped to perform
@@ -27,9 +27,12 @@ class Rigidity():
           be applied to columns moving in/out of `csvobj`. The row
           indices in this list match the column in the CSV file the list
           of rules will be applied to.
+        :param bool explain: When an error is thrown, display the row
+          and information about which column caused the error.
         '''
         self.csvobj = csvobj
         self.rules = rules
+        self.explain = explain
 
         if isinstance(rules, dict):
             self.keys = rules.keys()
@@ -71,6 +74,7 @@ class Rigidity():
         '''
         for row in rows:
             self.writerow(row)
+
 
     # New methods, not part of the `csv` interface
     def validate(self, row):
