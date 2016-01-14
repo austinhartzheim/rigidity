@@ -7,7 +7,6 @@ rulesets to be applied automatically while preserving the csv interface.
 This allows you to easily upgrade old software to use new, strict rules.
 '''
 
-import csv
 import rigidity.errors
 import rigidity.rules as rules
 
