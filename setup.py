@@ -5,7 +5,7 @@ setup(
     author='Austin Hartzheim',
     author_email='austin@austinhartzheim.me',
 
-    version='1.3.0',
+    version='1.4.0',
     packages=['rigidity'],
     license='GNU GPL v3',
     description='Data-validating CSV wrapper.',
