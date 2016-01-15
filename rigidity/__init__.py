@@ -18,7 +18,12 @@ class Rigidity():
 
     csvobj = None  # Declare here to prevent getattr/setattr recursion
 
-    def __init__(self, csvobj, rules=[], explain=False):
+    #: Do not display output at all.
+    DISPLAY_NONE = 0
+    #: Display simple warnings when ValueError is raised by a rule.
+    DISPLAY_SIMPLE = 1
+
+    def __init__(self, csvobj, rules=[], display=DISPLAY_NONE):
         '''
         :param csvfile: a Reader or Writer object from the csv module;
           any calls to this object's methods will be wrapped to perform
@@ -27,12 +32,12 @@ class Rigidity():
           be applied to columns moving in/out of `csvobj`. The row
           indices in this list match the column in the CSV file the list
           of rules will be applied to.
-        :param bool explain: When an error is thrown, display the row
+        :param int display: When an error is thrown, display the row
           and information about which column caused the error.
         '''
         self.csvobj = csvobj
         self.rules = rules
-        self.explain = explain
+        self.display = display
 
         if isinstance(rules, dict):
             self.keys = rules.keys()
@@ -135,7 +140,14 @@ class Rigidity():
         for key in self.keys:
             value = row[key]
             for rule in self.rules[key]:
-                value = rule.write(value)
+                try:
+                    value = rule.write(value)
+                except ValueError as err:
+                    if self.display == self.DISPLAY_SIMPLE:
+                        print('Invalid data encountered in column %s:' % key)
+                        print(' -', row)
+                        print(' - Error raised by rule:', rule)
+                    raise err
             row[key] = value
 
         # Return the updated data
@@ -162,7 +174,14 @@ class Rigidity():
         for key in self.keys:
             value = row[key]
             for rule in self.rules[key]:
-                value = rule.read(value)
+                try:
+                    value = rule.read(value)
+                except ValueError as err:
+                    if self.display == self.DISPLAY_SIMPLE:
+                        print('Invalid data encountered in column %s:' % key)
+                        print(' -', row)
+                        print(' - Error raised by rule:', rule)
+                    raise err
             row[key] = value
 
         # Return the updated data
