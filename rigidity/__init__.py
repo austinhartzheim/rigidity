@@ -147,6 +147,7 @@ class Rigidity():
                         print('Invalid data encountered in column %s:' % key)
                         print(' -', row)
                         print(' - Error raised by rule:', rule)
+                        print('')
                     raise err
             row[key] = value
 
@@ -181,6 +182,7 @@ class Rigidity():
                         print('Invalid data encountered in column %s:' % key)
                         print(' -', row)
                         print(' - Error raised by rule:', rule)
+                        print('')
                     raise err
             row[key] = value
 
