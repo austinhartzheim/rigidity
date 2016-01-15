@@ -388,13 +388,19 @@ class Unique(Rule):
         self.encountered = []
 
     def apply(self, value):
+        '''
+        Check that a value is unique.
+
+        :raises ValueError: when ACTION_ERROR is set and the value is
+          not unique.
+        '''
         if value in self.encountered:
             if self.action == self.ACTION_ERROR:
-                raise Exception('Value not unique')
+                raise ValueError('Value not unique')
             elif self.action == self.ACTION_DROPROW:
                 raise rigidity.errors.DropRow()
             else:
-                raise Exception('Value not unique')
+                raise ValueError('Invalid action set')
         self.encountered.append(value)
         return value
 
