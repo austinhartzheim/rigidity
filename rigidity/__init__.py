@@ -199,7 +199,7 @@ class Rigidity():
     def __iter__(self):
         for row in iter(self.csvobj):
             try:
-                yield self.validate(row)
+                yield self.validate_read(row)
             except rigidity.errors.DropRow:
                 continue
 
