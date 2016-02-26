@@ -184,6 +184,13 @@ class Rigidity():
                         print(' - Error raised by rule:', rule)
                         print('')
                     raise err
+                except IndexError as err:
+                    if self.display == self.DISPLAY_SIMPLE:
+                        print('IndexError raised in column %s:' % key)
+                        print(' -', row)
+                        print(' - Error raised by rule:', rule)
+                        print('')
+                    raise err
             row[key] = value
 
         # Return the updated data
