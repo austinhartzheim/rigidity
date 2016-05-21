@@ -28,7 +28,7 @@ Here is asimple example of validating UPC codes and ensuring their uniqueness::
 
 An explanation of this code and more documentation is available on `Read The Docs`_.
 
-.. _Read The Docs: https://rigidity.readthedocs.org/en/latest/
+.. _Read The Docs: https://rigidity.readthedocs.io/en/latest/
 
 Installing
 ----------
