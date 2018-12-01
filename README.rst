@@ -4,7 +4,9 @@ Rigidity
 .. image:: https://travis-ci.org/austinhartzheim/rigidity.svg?branch=master
    :target: https://travis-ci.org/austinhartzheim/rigidity
 .. image:: https://coveralls.io/repos/austinhartzheim/rigidity/badge.svg?branch=master&service=github
-   :target: https://coveralls.io/github/austinhartzheim/rigidity?branch=master 
+   :target: https://coveralls.io/github/austinhartzheim/rigidity?branch=master
+.. image:: https://readthedocs.org/projects/rigidity/badge/
+   :target: https://rigidity.readthedocs.io/
 
 
 Rigidity is a simple wrapper to Python's built-in `csv` module that allows for validation and correction of data being read or written with the `csv` module.
